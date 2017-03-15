@@ -6,16 +6,19 @@ import React from 'react';
 import ol from 'openlayers';
 
 import util from '../../../common/util.jsx';
+import Eventful from '../../../common/Eventful.js';
+import olConfig from './ol-config';
+import toolbarAction from './toolbar-action';
 
 import 'openlayers/css/ol.css';
 import './olbasemap.scss';
 
+let toolbarActionClass = new toolbarAction();
+
 class Olbasemap extends React.Component{
-
-	componentDidMount(){
-		util.adaptHeight('map',105,300);//高度自适应
-
-		let projection,attribution,coor,view,mousePositionControl;
+    constructor(props){
+        super(props);
+        let map,view,projection,attribution,coor,mousePositionControl;
 
         attribution = new ol.Attribution({
             html: '© <a href="http://www.chinaonmap.com/map/index.html">天地图</a>'
@@ -27,8 +30,12 @@ class Olbasemap extends React.Component{
             // target: document.getElementById('mouse-position'),
             undefinedHTML: '&nbsp;'
         });
-
-		let map = new ol.Map({
+        this.view = view = new ol.View({
+            // projection: 'EPSG:4326',//WGS84
+            center: ol.proj.fromLonLat(olConfig.initialView.center||[104, 30]),
+            zoom: olConfig.initialView.zoom || 5,
+        });
+        this.map = map = new ol.Map({
             target: 'map',
             layers: [
                 new ol.layer.Tile({
@@ -43,11 +50,7 @@ class Olbasemap extends React.Component{
                     })
                 })
             ],
-            view: new ol.View({
-              // projection: 'EPSG:4326',//WGS84
-              center: ol.proj.fromLonLat([104, 30]),
-              zoom: 5,
-            }),
+            view: view,
             controls: ol.control.defaults().extend([
                 new ol.control.FullScreen(), //全屏控件
                 new ol.control.ScaleLine(), //比例尺
@@ -56,11 +59,41 @@ class Olbasemap extends React.Component{
                 new ol.control.ZoomSlider(),
                 mousePositionControl
              ]),
-      	});
-	}
-	render(){
+        });
+
+        Eventful.subscribe('pan',()=>this.handleClickOfPan());//订阅
+        Eventful.subscribe('zoomtoall',()=>this.handleClickOfZoomtoall());
+        Eventful.subscribe('distance',()=>this.handleClickOfDistance());
+        Eventful.subscribe('area',()=>this.handleClickOfArea());
+    }
+    handleClickOfPan(){
+        toolbarActionClass.handleClickOfPan(this.map);
+    }
+    handleClickOfZoomtoall(){
+        toolbarActionClass.handleClickOfZoomtoall(this.map,this.view);
+    }
+    handleClickOfDistance(){
+        toolbarActionClass.handleClickOfDistance(this.map);
+    }
+    handleClickOfArea(){
+        toolbarActionClass.handleClickOfArea(this.map);
+    }
+    
+	componentDidMount(){
+		util.adaptHeight('map',105,300);//高度自适应
+
+        if(__DEV__) console.info("componentDidMount");
+
+		this.map.setTarget(this.refs.map);
+    }
+    componentWillUnmount () {
+        this.map.setTarget(undefined)
+    }
+
+    render(){
 		return(
-			<div id="map"></div>
+			<div id="map" ref="map" >
+            </div>
 		)
 	}
 }
