@@ -8,12 +8,14 @@ import ol from 'openlayers';
 import util from '../../../common/util.jsx';
 import Eventful from '../../../common/Eventful.js';
 import olConfig from './ol-config';
-import toolbarAction from './toolbar-action';
+import ToolbarAction from './toolbar-action';
+import EditbarAction from './editbar-action';
 
 import 'openlayers/css/ol.css';
 import './olbasemap.scss';
 
-let toolbarActionClass = new toolbarAction();
+let toolbarAction = new ToolbarAction();
+let editbarAction = new EditbarAction();
 
 class Olbasemap extends React.Component{
     constructor(props){
@@ -65,20 +67,69 @@ class Olbasemap extends React.Component{
         Eventful.subscribe('zoomtoall',()=>this.handleClickOfZoomtoall());
         Eventful.subscribe('distance',()=>this.handleClickOfDistance());
         Eventful.subscribe('area',()=>this.handleClickOfArea());
+        Eventful.subscribe('position',()=>this.handleClickOfPosition());
+        Eventful.subscribe('find',()=>this.handleClickOfFind());
+        Eventful.subscribe('draw-point',()=>this.handleDrawPoint());
+        Eventful.subscribe('draw-line',()=>this.handleDrawLine());
+        Eventful.subscribe('draw-rect',()=>this.handleDrawRect());
+        Eventful.subscribe('draw-plygon',()=>this.handleDrawPlygon());
+        Eventful.subscribe('draw-edit',()=>this.handleDrawEdit());
+        Eventful.subscribe('draw-delete',()=>this.handleDrawDelete());
+        Eventful.subscribe('draw-save',()=>this.handleDrawSave());
     }
+    handleDrawPoint(){
+        toolbarAction.removeDistanceAreaDraw(this.map);
+        editbarAction.handleDrawPoint(this.map);
+    }
+    handleDrawLine(){
+        toolbarAction.removeDistanceAreaDraw(this.map);
+        editbarAction.handleDrawLine(this.map);
+    }
+    handleDrawRect(){
+        toolbarAction.removeDistanceAreaDraw(this.map);
+        editbarAction.handleDrawRect(this.map);
+    }
+    handleDrawPlygon(){
+        toolbarAction.removeDistanceAreaDraw(this.map);
+        editbarAction.handleDrawPlygon(this.map);
+    }
+    handleDrawEdit(){
+        toolbarAction.removeDistanceAreaDraw(this.map);
+        editbarAction.handleDrawEdit(this.map);
+    }
+    handleDrawDelete(){
+        toolbarAction.removeDistanceAreaDraw(this.map);
+        editbarAction.handleDrawDelete(this.map);
+    }
+    handleDrawSave(){
+        toolbarAction.removeDistanceAreaDraw(this.map);
+        editbarAction.handleDrawSave(this.map);
+    }
+    /********************/
     handleClickOfPan(){
-        toolbarActionClass.handleClickOfPan(this.map);
+        editbarAction.removeEditDraw(this.map);
+        toolbarAction.handleClickOfPan(this.map);
     }
     handleClickOfZoomtoall(){
-        toolbarActionClass.handleClickOfZoomtoall(this.map,this.view);
+        editbarAction.removeEditDraw(this.map);
+        toolbarAction.handleClickOfZoomtoall(this.map,this.view);
     }
     handleClickOfDistance(){
-        toolbarActionClass.handleClickOfDistance(this.map);
+        editbarAction.removeEditDraw(this.map);
+        toolbarAction.handleClickOfDistance(this.map);
     }
     handleClickOfArea(){
-        toolbarActionClass.handleClickOfArea(this.map);
+        editbarAction.removeEditDraw(this.map);
+        toolbarAction.handleClickOfArea(this.map);
     }
-    
+    handleClickOfPosition(){
+        editbarAction.removeEditDraw(this.map);
+        toolbarAction.handleClickOfPosition(this.map,this.view);
+    }
+    handleClickOfFind(){
+        editbarAction.removeEditDraw(this.map);
+        toolbarAction.handleClickOfFind(this.map);
+    }
 	componentDidMount(){
 		util.adaptHeight('map',105,300);//高度自适应
 

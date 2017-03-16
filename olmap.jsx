@@ -7,6 +7,7 @@ import ol from 'openlayers';
 
 import Olbasemap from './olbasemap';
 import Toolbar from './toolbar';
+import Editbar from './editbar';
 
 import './olmap.scss';
 
@@ -17,7 +18,10 @@ class Olmap extends React.Component{
 	render(){
 		return(
 			<div id="olmap">
-				<div id="toolbar-div"><Toolbar/></div>
+				<div id="mapbar-div">
+					<Toolbar/>
+					<Editbar/>
+				</div>
 				<Olbasemap ref="olbasemap">
 				</Olbasemap>
 			</div>

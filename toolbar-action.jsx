@@ -4,11 +4,12 @@
  */
 import ol from 'openlayers';
 
+import EditbarAction from './editbar-action';
 import olConfig from './ol-config';
 
 let draw,helpTooltipElement;
-
-class toolbarAction{
+let editbarAction = new EditbarAction();
+class ToolbarAction{
 	/**
 	 * [handleClickOfPan 浏览]
      * @param  {[ol.Map]}  map       [ol 地图]
@@ -16,7 +17,7 @@ class toolbarAction{
 	handleClickOfPan(map){
     	let dragPan;
     	
-    	this.removeDistanceAreaDraw();
+    	this.removeDistanceAreaDraw(map);
 
     	dragPan = new ol.interaction.DragPan();
     	if(!dragPan.getActive()) dragPan.setActive(true);
@@ -28,7 +29,7 @@ class toolbarAction{
 	 * @param  {[ol.View]} view [视图]
 	 */
 	handleClickOfZoomtoall(map,view){
-    	this.removeDistanceAreaDraw();
+    	this.removeDistanceAreaDraw(map);
 
         view.animate({zoom:olConfig.initialView.zoom || 5,
             center:ol.proj.fromLonLat(olConfig.initialView.center||[104, 30])});
@@ -50,6 +51,27 @@ class toolbarAction{
     	map.removeInteraction(draw);
 
         this._handleClickOfDistanceArea(map,'Polygon',true);
+    }
+    handleClickOfPosition(map,view){
+    	this.removeDistanceAreaDraw(map);
+    	let geolocation = new ol.Geolocation({
+		    // take the projection to use from the map's view
+		    projection: view.getProjection()
+		});
+		console.log("定位中...",geolocation.getPosition());
+		// listen to changes in position
+		geolocation.on('change', function(evt) {
+		   console.log(geolocation.getPosition());
+		});
+		geolocation.on('error', function() {
+			alert("定位失败，请重新定位！");
+		});
+    }
+    handleClickOfFind(map){
+    	console.log("查询");
+    	this.removeDistanceAreaDraw(map);
+    	document.getElementById("map").style.cursor = "help";
+    	
     }
 	/**
      * [_handleClickOfDistanceArea description]
@@ -259,7 +281,7 @@ class toolbarAction{
         map.addOverlay(measureTooltip);
       }
     }
-    removeDistanceAreaDraw(){
+    removeDistanceAreaDraw(map){
     	if(draw){
     		map.removeInteraction(draw);
     		draw = null;
@@ -268,4 +290,4 @@ class toolbarAction{
     }
 }
 
-export default toolbarAction;
+export default ToolbarAction;
