@@ -10,9 +10,10 @@ import Eventful from '../../../common/Eventful.js';
 import './editbar.scss';
 
 class Editbar extends React.Component{
-	constructor(props){
+    constructor(props){
         super(props);
 
+        this.handleDrawSelect = this.handleDrawSelect.bind(this);
         this.handleDrawPoint = this.handleDrawPoint.bind(this);
         this.handleDrawLine = this.handleDrawLine.bind(this);
         this.handleDrawRect = this.handleDrawRect.bind(this);
@@ -21,8 +22,11 @@ class Editbar extends React.Component{
         this.handleDrawDelete = this.handleDrawDelete.bind(this);
         this.handleDrawSave = this.handleDrawSave.bind(this);
     }
+    handleDrawSelect(){
+    	Eventful.dispatch('draw-select');
+    }
     handleDrawPoint(){
-    	Eventful.dispatch('draw-point');
+        Eventful.dispatch('draw-point');
     }
     handleDrawLine(){
         Eventful.dispatch('draw-line');
@@ -31,7 +35,7 @@ class Editbar extends React.Component{
         Eventful.dispatch('draw-rect');
     }
     handleDrawPlygon(){
-    	Eventful.dispatch('draw-polygon');
+    	Eventful.dispatch('draw-plygon');
     }
     handleDrawEdit(){
         Eventful.dispatch('draw-edit');
@@ -45,6 +49,9 @@ class Editbar extends React.Component{
 	render(){
 		return(
 			<div id="editbar" className="mapbar">
+                <div id="e-select" className="e-item" title="选择" onClick={this.handleDrawSelect}>
+                    <img src={require("./imgs/select.png")}/>
+                </div>
 				<div id="e-point" className="e-item" title="绘制点" onClick={this.handleDrawPoint}>
 					<img src={require("./imgs/point.png")}/>
 				</div>

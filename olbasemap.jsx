@@ -69,6 +69,7 @@ class Olbasemap extends React.Component{
         Eventful.subscribe('area',()=>this.handleClickOfArea());
         Eventful.subscribe('position',()=>this.handleClickOfPosition());
         Eventful.subscribe('find',()=>this.handleClickOfFind());
+        Eventful.subscribe('draw-select',()=>this.handleDrawSelect());
         Eventful.subscribe('draw-point',()=>this.handleDrawPoint());
         Eventful.subscribe('draw-line',()=>this.handleDrawLine());
         Eventful.subscribe('draw-rect',()=>this.handleDrawRect());
@@ -76,6 +77,9 @@ class Olbasemap extends React.Component{
         Eventful.subscribe('draw-edit',()=>this.handleDrawEdit());
         Eventful.subscribe('draw-delete',()=>this.handleDrawDelete());
         Eventful.subscribe('draw-save',()=>this.handleDrawSave());
+    }
+    handleDrawSelect(){
+        editbarAction.handleDrawSelect(this.map);
     }
     handleDrawPoint(){
         toolbarAction.removeDistanceAreaDraw(this.map);

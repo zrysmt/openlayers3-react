@@ -125,10 +125,10 @@ class ToolbarAction{
         }
 
         map.on('pointermove',pointerMoveHandler);
-        map.getViewport().addEventListener('mouseout', function() {
+        map.getViewport().addEventListener('mouseout', ()=> {
             helpTooltipElement.classList.add('hidden');
         });
-        formatLength = function(line) {
+        formatLength = (line) =>{
             let length;
             if (isGeodesic) {
               let coordinates = line.getCoordinates();
@@ -159,7 +159,7 @@ class ToolbarAction{
        * @param {ol.geom.Polygon} polygon The polygon.
        * @return {string} Formatted area.
        */
-        formatArea = function(polygon) {
+        formatArea = (polygon)=> {
             let area;
             if (isGeodesic) {
               let sourceProj = map.getView().getProjection();
@@ -212,13 +212,13 @@ class ToolbarAction{
             createHelpTooltip();
 
             let listener;
-            draw.on('drawstart', function(evt) {
+            draw.on('drawstart', (evt)=> {
                   // set sketch
                   sketch = evt.feature;
                   /** @type {ol.Coordinate|undefined} */
                   let tooltipCoord = evt.coordinate;
 
-                  listener = sketch.getGeometry().on('change', function(evt) {
+                  listener = sketch.getGeometry().on('change', (evt)=> {
                     let geom = evt.target;
                     let output;
                     if (geom instanceof ol.geom.Polygon) {
@@ -233,7 +233,7 @@ class ToolbarAction{
                   });
                 }, this);
 
-            draw.on('drawend',function() {
+            draw.on('drawend',()=> {
                   measureTooltipElement.className = 'tooltip tooltip-static';
                   measureTooltip.setOffset([0, -7]);
                   // unset sketch
