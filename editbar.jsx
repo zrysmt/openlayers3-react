@@ -4,8 +4,7 @@
  */
 import React from 'react';
 import ol from 'openlayers';
-
-import Eventful from '../../../common/Eventful.js';
+import Eventful from '../../../common/eventful.js';
 
 import './editbar.scss';
 
@@ -23,28 +22,39 @@ class Editbar extends React.Component{
         this.handleDrawSave = this.handleDrawSave.bind(this);
     }
     handleDrawSelect(){
-    	Eventful.dispatch('draw-select');
+        this.handleDrawCommonEvent();
+        Eventful.dispatch('draw-select');
     }
     handleDrawPoint(){
+        this.handleDrawCommonEvent();
         Eventful.dispatch('draw-point');
     }
     handleDrawLine(){
+        this.handleDrawCommonEvent();
         Eventful.dispatch('draw-line');
     }
     handleDrawRect(){
+        this.handleDrawCommonEvent();
         Eventful.dispatch('draw-rect');
     }
     handleDrawPlygon(){
-    	Eventful.dispatch('draw-plygon');
+        this.handleDrawCommonEvent();
+        Eventful.dispatch('draw-plygon');
     }
     handleDrawEdit(){
+        this.handleDrawCommonEvent();
         Eventful.dispatch('draw-edit');
     }
     handleDrawDelete(){
+        this.handleDrawCommonEvent();
         Eventful.dispatch('draw-delete');
     }
     handleDrawSave(){
-    	Eventful.dispatch('draw-save');
+        this.handleDrawCommonEvent();
+        Eventful.dispatch('draw-save');
+    }
+    handleDrawCommonEvent(){
+    	Eventful.dispatch('removeDistanceAreaDraw');
     }
 	render(){
 		return(

@@ -1,0 +1,37 @@
+ #maptypebar{
+ 	font-size: 14px;
+ 	.maptypebar-title{
+ 		// font-weight: bolder;
+ 		margin:3px 8px;
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 25px;
+        color:#44a3e5;
+ 		&:hover{
+ 			cursor:pointer;
+ 			color:#0000ff;
+ 		}
+ 	}
+ 	.maptypebar-pane{
+ 		position: absolute;
+ 		background-color: rgba(255,255,255,0.8);
+		margin-left: -15px;
+		div{
+			padding:5px 10px;
+        	color:#44a3e5;
+			&:hover{
+ 				cursor:pointer;
+ 				color:#0000ff;
+ 			}
+		}
+
+		.selected:before{
+			content:"√";
+			padding:0 5px;
+		}
+		.unselected:before{
+			content:" ";
+			padding:0 10px;
+		}
+ 	}
+ }

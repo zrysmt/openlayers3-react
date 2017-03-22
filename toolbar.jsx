@@ -6,7 +6,7 @@ import React from 'react';
 import ol from 'openlayers';
 
 import olConfig from './ol-config';
-import Eventful from '../../../common/Eventful.js';
+import Eventful from '../../../common/eventful.js';
 
 import './toolbar.scss';
 
@@ -25,22 +25,31 @@ class Toolbar extends React.Component{
         this.handleClickOfFind = this.handleClickOfFind.bind(this);
     }
     handleClickOfPan(){
+        this.handleToolbarCommonEvent();
     	Eventful.dispatch('pan');
     }
     handleClickOfZoomtoall(){
+        this.handleToolbarCommonEvent();
         Eventful.dispatch('zoomtoall');
     }
     handleClickOfDistance(){
+        this.handleToolbarCommonEvent();
     	Eventful.dispatch('distance');
     }
     handleClickOfArea(){
+        this.handleToolbarCommonEvent();
         Eventful.dispatch('area');
     }
     handleClickOfPosition(){
+        this.handleToolbarCommonEvent();
         Eventful.dispatch('position');
     }
     handleClickOfFind(){
-    	Eventful.dispatch('find');
+        this.handleToolbarCommonEvent();
+        Eventful.dispatch('find');
+    }
+    handleToolbarCommonEvent(){
+    	Eventful.dispatch('removeEditDraw');
     }
 	render(){
 		return(

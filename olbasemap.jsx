@@ -6,16 +6,18 @@ import React from 'react';
 import ol from 'openlayers';
 
 import util from '../../../common/util.jsx';
-import Eventful from '../../../common/Eventful.js';
+import Eventful from '../../../common/eventful.js';
 import olConfig from './ol-config';
 import ToolbarAction from './toolbar-action';
 import EditbarAction from './editbar-action';
+import MaptypebarAction from './maptypebar-action';
 
 import 'openlayers/css/ol.css';
 import './olbasemap.scss';
 
 let toolbarAction = new ToolbarAction();
 let editbarAction = new EditbarAction();
+let maptypebarAction = new MaptypebarAction();
 
 class Olbasemap extends React.Component{
     constructor(props){
@@ -37,21 +39,21 @@ class Olbasemap extends React.Component{
             center: ol.proj.fromLonLat(olConfig.initialView.center||[104, 30]),
             zoom: olConfig.initialView.zoom || 5,
         });
+        this.vecLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                attributions: [attribution],
+                url: olConfig.tianMap.vec||"http://t2.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}"
+            })
+        });
+        this.vecLabelLayer =  new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: olConfig.tianMap.vecLabel||"http://t2.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}"
+            })
+        });
+        this.vecLabelLayer.setZIndex(999);
         this.map = map = new ol.Map({
             target: 'map',
-            layers: [
-                new ol.layer.Tile({
-                    source: new ol.source.XYZ({
-                        attributions: [attribution],
-                        url: "http://t2.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}"
-                    })
-                }),
-                new ol.layer.Tile({
-                    source: new ol.source.XYZ({
-                        url: "http://t2.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}"
-                    })
-                })
-            ],
+            layers: [this.vecLayer,this.vecLabelLayer],
             view: view,
             controls: ol.control.defaults().extend([
                 new ol.control.FullScreen(), //全屏控件
@@ -62,78 +64,54 @@ class Olbasemap extends React.Component{
                 mousePositionControl
              ]),
         });
+        //ToolbarAction
+        this.handleToolbar();
+        //EditbarAction
+        this.handleEditbar();
+        //Maptypebar
+        this.handleMaptypebar();
+    }
+    handleMaptypebar(){
+        let map = this.map;
+        let vecLayer = this.vecLayer;
+        let vecLabelLayer = this.vecLabelLayer;
 
-        Eventful.subscribe('pan',()=>this.handleClickOfPan());//订阅
-        Eventful.subscribe('zoomtoall',()=>this.handleClickOfZoomtoall());
-        Eventful.subscribe('distance',()=>this.handleClickOfDistance());
-        Eventful.subscribe('area',()=>this.handleClickOfArea());
-        Eventful.subscribe('position',()=>this.handleClickOfPosition());
-        Eventful.subscribe('find',()=>this.handleClickOfFind());
-        Eventful.subscribe('draw-select',()=>this.handleDrawSelect());
-        Eventful.subscribe('draw-point',()=>this.handleDrawPoint());
-        Eventful.subscribe('draw-line',()=>this.handleDrawLine());
-        Eventful.subscribe('draw-rect',()=>this.handleDrawRect());
-        Eventful.subscribe('draw-plygon',()=>this.handleDrawPlygon());
-        Eventful.subscribe('draw-edit',()=>this.handleDrawEdit());
-        Eventful.subscribe('draw-delete',()=>this.handleDrawDelete());
-        Eventful.subscribe('draw-save',()=>this.handleDrawSave());
+        Eventful.subscribe('remove-vec',()=>maptypebarAction.layerCtl('remove-vec',map,vecLayer));
+        Eventful.subscribe('add-vec',()=>maptypebarAction.layerCtl('add-vec',map,vecLayer));
+        Eventful.subscribe('remove-vec-label',()=>maptypebarAction.layerCtl('remove-vec-label',map,vecLabelLayer));
+        Eventful.subscribe('add-vec-label',()=>maptypebarAction.layerCtl('add-vec-label',map,vecLabelLayer));
+        Eventful.subscribe('remove-img',()=>maptypebarAction.layerCtl('remove-img',map));
+        Eventful.subscribe('add-img',()=>maptypebarAction.layerCtl('add-img',map));
+        Eventful.subscribe('remove-img-label',()=>maptypebarAction.layerCtl('remove-img-label',map));
+        Eventful.subscribe('add-img-label',()=>maptypebarAction.layerCtl('add-img-label',map));
     }
-    handleDrawSelect(){
-        editbarAction.handleDrawSelect(this.map);
+    /****************************************************************/
+    handleEditbar(){
+        let map = this.map;
+        Eventful.subscribe('removeDistanceAreaDraw',()=>toolbarAction.removeDistanceAreaDraw(map));
+
+        Eventful.subscribe('draw-select',()=>editbarAction.handleDrawSelect(map));
+        Eventful.subscribe('draw-point',()=>editbarAction.handleDrawPoint(map));
+        Eventful.subscribe('draw-line',()=>editbarAction.handleDrawLine(map));
+        Eventful.subscribe('draw-rect',()=>editbarAction.handleDrawRect(map));
+        Eventful.subscribe('draw-plygon',()=>editbarAction.handleDrawPlygon(map));
+        Eventful.subscribe('draw-edit',()=>editbarAction.handleDrawEdit(map));
+        Eventful.subscribe('draw-delete',()=>editbarAction.handleDrawDelete(map));
+        Eventful.subscribe('draw-save',()=>editbarAction.handleDrawSave(map));
     }
-    handleDrawPoint(){
-        toolbarAction.removeDistanceAreaDraw(this.map);
-        editbarAction.handleDrawPoint(this.map);
+    handleToolbar(){
+        let map = this.map;
+        let view = this.view;
+        Eventful.subscribe('removeEditDraw',()=>editbarAction.removeEditDraw(map));
+
+        Eventful.subscribe('pan',()=>toolbarAction.handleClickOfPan(map));//订阅
+        Eventful.subscribe('zoomtoall',()=>toolbarAction.handleClickOfZoomtoall(map,view));
+        Eventful.subscribe('distance',()=>toolbarAction.handleClickOfDistance(map));
+        Eventful.subscribe('area',()=>toolbarAction.handleClickOfArea(map));
+        Eventful.subscribe('position',()=>toolbarAction.handleClickOfPosition(map,view));
+        Eventful.subscribe('find',()=>toolbarAction.handleClickOfFind(map));
     }
-    handleDrawLine(){
-        toolbarAction.removeDistanceAreaDraw(this.map);
-        editbarAction.handleDrawLine(this.map);
-    }
-    handleDrawRect(){
-        toolbarAction.removeDistanceAreaDraw(this.map);
-        editbarAction.handleDrawRect(this.map);
-    }
-    handleDrawPlygon(){
-        toolbarAction.removeDistanceAreaDraw(this.map);
-        editbarAction.handleDrawPlygon(this.map);
-    }
-    handleDrawEdit(){
-        toolbarAction.removeDistanceAreaDraw(this.map);
-        editbarAction.handleDrawEdit(this.map);
-    }
-    handleDrawDelete(){
-        toolbarAction.removeDistanceAreaDraw(this.map);
-        editbarAction.handleDrawDelete(this.map);
-    }
-    handleDrawSave(){
-        toolbarAction.removeDistanceAreaDraw(this.map);
-        editbarAction.handleDrawSave(this.map);
-    }
-    /********************/
-    handleClickOfPan(){
-        editbarAction.removeEditDraw(this.map);
-        toolbarAction.handleClickOfPan(this.map);
-    }
-    handleClickOfZoomtoall(){
-        editbarAction.removeEditDraw(this.map);
-        toolbarAction.handleClickOfZoomtoall(this.map,this.view);
-    }
-    handleClickOfDistance(){
-        editbarAction.removeEditDraw(this.map);
-        toolbarAction.handleClickOfDistance(this.map);
-    }
-    handleClickOfArea(){
-        editbarAction.removeEditDraw(this.map);
-        toolbarAction.handleClickOfArea(this.map);
-    }
-    handleClickOfPosition(){
-        editbarAction.removeEditDraw(this.map);
-        toolbarAction.handleClickOfPosition(this.map,this.view);
-    }
-    handleClickOfFind(){
-        editbarAction.removeEditDraw(this.map);
-        toolbarAction.handleClickOfFind(this.map);
-    }
+    
 	componentDidMount(){
 		util.adaptHeight('map',105,300);//高度自适应
 

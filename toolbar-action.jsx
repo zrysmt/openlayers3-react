@@ -4,11 +4,9 @@
  */
 import ol from 'openlayers';
 
-import EditbarAction from './editbar-action';
 import olConfig from './ol-config';
 
 let draw,helpTooltipElement;
-let editbarAction = new EditbarAction();
 class ToolbarAction{
 	/**
 	 * [handleClickOfPan 浏览]
@@ -213,43 +211,43 @@ class ToolbarAction{
 
             let listener;
             draw.on('drawstart', (evt)=> {
-                  // set sketch
-                  sketch = evt.feature;
-                  /** @type {ol.Coordinate|undefined} */
-                  let tooltipCoord = evt.coordinate;
+                // set sketch
+                sketch = evt.feature;
+                /** @type {ol.Coordinate|undefined} */
+                let tooltipCoord = evt.coordinate;
 
-                  listener = sketch.getGeometry().on('change', (evt)=> {
-                    let geom = evt.target;
-                    let output;
-                    if (geom instanceof ol.geom.Polygon) {
-                      output = formatArea(geom);
-                      tooltipCoord = geom.getInteriorPoint().getCoordinates();
-                    } else if (geom instanceof ol.geom.LineString) {
-                      output = formatLength(geom);
-                      tooltipCoord = geom.getLastCoordinate();
-                    }
-                    measureTooltipElement.innerHTML = output;
-                    measureTooltip.setPosition(tooltipCoord);
-                  });
-                }, this);
+                listener = sketch.getGeometry().on('change', (evt)=> {
+                  let geom = evt.target;
+                  let output;
+                  if (geom instanceof ol.geom.Polygon) {
+                    output = formatArea(geom);
+                    tooltipCoord = geom.getInteriorPoint().getCoordinates();
+                  } else if (geom instanceof ol.geom.LineString) {
+                    output = formatLength(geom);
+                    tooltipCoord = geom.getLastCoordinate();
+                  }
+                  measureTooltipElement.innerHTML = output;
+                  measureTooltip.setPosition(tooltipCoord);
+                });
+            }, this);
 
             draw.on('drawend',()=> {
-                  measureTooltipElement.className = 'tooltip tooltip-static';
-                  measureTooltip.setOffset([0, -7]);
-                  // unset sketch
-                  sketch = null;
-                  // unset tooltip so that a new one can be created
-                  measureTooltipElement = null;
-                  createMeasureTooltip();
-                  ol.Observable.unByKey(listener);
-                }, this);
+                measureTooltipElement.className = 'tooltip tooltip-static';
+                measureTooltip.setOffset([0, -7]);
+                // unset sketch
+                sketch = null;
+                // unset tooltip so that a new one can be created
+                measureTooltipElement = null;
+                createMeasureTooltip();
+                ol.Observable.unByKey(listener);
+            }, this);
             
             // this.draw = draw;
         }
-              /**
-       * Creates a new help tooltip
-       */
-      function createHelpTooltip() {
+    /**
+    * Creates a new help tooltip
+    */
+    function createHelpTooltip() {
         if (helpTooltipElement) {
           helpTooltipElement.parentNode.removeChild(helpTooltipElement);
         }
@@ -261,13 +259,13 @@ class ToolbarAction{
           positioning: 'center-left'
         });
         map.addOverlay(helpTooltip);
-      }
+    }
 
 
-      /**
-       * Creates a new measure tooltip
-       */
-      function createMeasureTooltip() {
+    /**
+     * Creates a new measure tooltip
+     */
+    function createMeasureTooltip() {
         if (measureTooltipElement) {
           measureTooltipElement.parentNode.removeChild(measureTooltipElement);
         }

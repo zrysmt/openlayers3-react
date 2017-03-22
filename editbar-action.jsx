@@ -69,7 +69,8 @@ class EditbarAction{
 	 * [handleDrawSave 保存数据到数据库中]
 	 */
 	handleDrawSave(map){
-		let features4Save = this.source.getFeatures();
+		let features4Save = this.source&&this.source.getFeatures();
+		if(!features4Save) return;
 		features4Save.forEach((feature)=>{
 			let coordinates = feature.getGeometry().getCoordinates();
 			console.info(coordinates);
