@@ -29,6 +29,7 @@ class MaptypebarAction{
             case 'add-vec':
                 if(vecLayer) return;
                 vecLayer = new ol.layer.Tile({
+                    title: "天地图",
                     source: new ol.source.XYZ({
                         url: olConfig.tianMap.vec||"http://t2.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}"
                     })
@@ -38,6 +39,7 @@ class MaptypebarAction{
             case 'add-vec-label':
                 if(vecLabelLayer) return;
                 vecLabelLayer =  new ol.layer.Tile({
+                    title: "天地图标注",
                     source: new ol.source.XYZ({
                         url: olConfig.tianMap.vecLabel||"http://t2.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}"
                     })
@@ -53,7 +55,7 @@ class MaptypebarAction{
                 img = new ol.layer.Tile({
                     title: "天地图卫星影像",
                     source: new ol.source.XYZ({
-                        url: olConfig.tianMap.img||'http://t3.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}'
+                        url: olConfig.tianMap.img||'http://t2.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}'
                     })
                 });
 
@@ -68,7 +70,7 @@ class MaptypebarAction{
                 imgLabel = new ol.layer.Tile({
                     title: "天地图卫星影像标注",
                     source: new ol.source.XYZ({
-                        url: olConfig.tianMap.imgLabel||'http://t3.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}'
+                        url: olConfig.tianMap.imgLabel||'http://t2.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}'
                     })
                 });
                 imgLabel.setZIndex(999);

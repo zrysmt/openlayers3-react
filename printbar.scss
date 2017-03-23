@@ -1,0 +1,55 @@
+ #printbar{
+ 	font-size: 14px;
+ 	.printbar-title{
+ 		// font-weight: bolder;
+ 		margin:3px 8px;
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 25px;
+        color:#44a3e5;
+        &:before{
+        	content: url(imgs/print.png);
+			background-position: -5px -111px;
+			padding:5px;
+			vertical-align: middle;
+        }
+ 		&:hover{
+ 			cursor:pointer;
+ 			color:#0000ff;
+ 			opacity: 0.8;
+ 		}
+ 	}
+ 	.printbar-pane{
+ 		position: absolute;
+ 		background-color: rgba(255,255,255,0.8);
+		margin-left: -15px;
+
+		padding:5px 10px;
+        color:#44a3e5;
+        select{
+        	width:75px;
+        	margin:5px 0;
+        	color:#333;
+        }
+ 	}
+ }
+
+
+ .btn{
+ 	border:1px solid  #44a3e5;
+ 	background-color:rgba(255,255,255,0);
+ 	color: #44a3e5;
+ 	font-size: 14px;
+ 	&:hover{
+ 		cursor: pointer;
+ 		background-color: #44a3e5;
+ 		color: #fff;
+ 	}
+ }
+
+ .print-btn{
+ 	margin-left: 42px;
+ }
+ .print-img-btn{
+ 	margin-top: 5px;
+ }

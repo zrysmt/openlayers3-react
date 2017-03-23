@@ -11,6 +11,7 @@ import olConfig from './ol-config';
 import ToolbarAction from './toolbar-action';
 import EditbarAction from './editbar-action';
 import MaptypebarAction from './maptypebar-action';
+import PrintbarAction from './printbar-action';
 
 import 'openlayers/css/ol.css';
 import './olbasemap.scss';
@@ -18,6 +19,7 @@ import './olbasemap.scss';
 let toolbarAction = new ToolbarAction();
 let editbarAction = new EditbarAction();
 let maptypebarAction = new MaptypebarAction();
+let printbarAction = new PrintbarAction();
 
 class Olbasemap extends React.Component{
     constructor(props){
@@ -70,6 +72,14 @@ class Olbasemap extends React.Component{
         this.handleEditbar();
         //Maptypebar
         this.handleMaptypebar();
+        //Printbar
+        this.handlePrintbar();
+    }
+    handlePrintbar(){
+        let map = this.map;
+        
+        Eventful.subscribe('print-img',()=>printbarAction.print2Img(map,this.vecLayer));
+        Eventful.subscribe('print',()=>printbarAction.print2Pdf(map,this.vecLayer));
     }
     handleMaptypebar(){
         let map = this.map;
