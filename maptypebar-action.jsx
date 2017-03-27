@@ -6,8 +6,7 @@ import ol from 'openlayers';
 
 import olConfig from './ol-config';
 import olSourceBaiduMap from './ext/baidumap.js';//加载进来就行
-
-console.log(new ol.source.BaiduMap());
+import TianMapSourcr from './ext/tianmap.js'; 
 
 let img,imgLabel,vecLayer,vecLabelLayer,baiduMap,baiduMapSat;
 
@@ -33,9 +32,9 @@ class MaptypebarAction{
                 if(vecLayer) return;
                 vecLayer = new ol.layer.Tile({
                     title: "天地图",
-                    source: new ol.source.XYZ({
+                    source: new ol.source.TianMap()/*new ol.source.XYZ({
                         url: olConfig.tianMap.vec||"http://t2.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}"
-                    })
+                    })*/
                 });
                 map.addLayer(vecLayer);
             break;
@@ -43,38 +42,42 @@ class MaptypebarAction{
                 if(vecLabelLayer) return;
                 vecLabelLayer =  new ol.layer.Tile({
                     title: "天地图标注",
-                    source: new ol.source.XYZ({
+                    source: new ol.source.TianMap({mapType:"label"})/*new ol.source.XYZ({
                         url: olConfig.tianMap.vecLabel||"http://t2.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}"
-                    })
+                    })*/
                 });
                 map.addLayer(vecLabelLayer);
             break;
             case 'remove-img':
-                map.removeLayer(img);
-                img = null;
+                if(img){
+                    map.removeLayer(img);
+                    img = null;
+                }
             break;
             case 'add-img':
                 if(img) return;
                 img = new ol.layer.Tile({
                     title: "天地图卫星影像",
-                    source: new ol.source.XYZ({
+                    source: new ol.source.TianMap({mapType:"sat"})/*new ol.source.XYZ({
                         url: olConfig.tianMap.img||'http://t2.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}'
-                    })
+                    })*/
                 });
 
                 map.addLayer(img);
             break;
             case 'remove-img-label':
-                map.removeLayer(imgLabel);
-                imgLabel = null;
+                if(imgLabel){
+                    map.removeLayer(imgLabel);
+                    imgLabel = null;  
+                }
             break;
             case 'add-img-label':
                 if(imgLabel) return;
                 imgLabel = new ol.layer.Tile({
                     title: "天地图卫星影像标注",
-                    source: new ol.source.XYZ({
+                    source: new ol.source.TianMap({mapType:"satLabel"})/*new ol.source.XYZ({
                         url: olConfig.tianMap.imgLabel||'http://t2.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}'
-                    })
+                    })*/
                 });
                 imgLabel.setZIndex(999);
                 map.addLayer(imgLabel);

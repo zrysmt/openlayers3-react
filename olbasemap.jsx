@@ -13,6 +13,8 @@ import EditbarAction from './editbar-action';
 import MaptypebarAction from './maptypebar-action';
 import PrintbarAction from './printbar-action';
 
+import TianMapSourcr from './ext/tianmap.js'; 
+
 import 'openlayers/css/ol.css';
 import './olbasemap.scss';
 
@@ -42,15 +44,15 @@ class Olbasemap extends React.Component{
             zoom: olConfig.initialView.zoom || 5,
         });
         this.vecLayer = new ol.layer.Tile({
-            source: new ol.source.XYZ({
+            source: new ol.source.TianMap() /*new ol.source.XYZ({
                 attributions: [attribution],
                 url: olConfig.tianMap.vec||"http://t2.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}"
-            })
+            })*/
         });
         this.vecLabelLayer =  new ol.layer.Tile({
-            source: new ol.source.XYZ({
+            source:  new ol.source.TianMap({mapType:"label"})/*new ol.source.XYZ({
                 url: olConfig.tianMap.vecLabel||"http://t2.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}"
-            })
+            })*/
         });
         this.vecLabelLayer.setZIndex(999);
         this.map = map = new ol.Map({
