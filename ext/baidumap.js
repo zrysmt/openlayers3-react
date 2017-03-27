@@ -3,10 +3,27 @@
  * 使用ES5语法书写
  * @Date 2017-3-23
  */
+/**
+ * 百度地图使用的是定制化的墨卡托投影和BD-09 datum
+ * 所以将WGS-84坐标转化为百度坐标需要两步
+ * first transform from WGS-84 to BD-09 (which itself uses the GCJ-09 transform), 
+ * and then do the forward transform to Baidu Mercator
+ * 第一步是将WGS-84 转化为 BD-09，然后转化为百度墨卡托
+   ```
+   baiduMercator.forward(bd09.fromWGS84(point))
+   ```
+   反过来的转化为
+   ```
+   bd09.toWGS84(baiduMercator.inverse(point))
+   ```
+ * > https://github.com/tschaub/projzh
+ * 
+ */
 import ol from 'openlayers';
 import projzh from 'projzh';
-/* projzh处理中文坐标的问题
- *https://www.versioneye.com/nodejs/projzh/0.5.0
+/* projzh处理百度坐标的问题，算法基于proj4m project
+ * https://www.versioneye.com/nodejs/projzh/0.5.0
+ * https://github.com/tschaub/projzh
  */
 ol.source.BaiduMap = function(options){
 	var options = options ? options : {};
@@ -46,7 +63,15 @@ ol.source.BaiduMap = function(options){
 
   	/*var url = options.url  !== undefined ?
   	 options.url:'http://online3.map.bdimg.com/onlinelabel/?qt=tile&x={x}&y={y}&z={z}&styles=pl&udt=20170301&scaler=1&p=1';*/
-  	ol.source.TileImage.call(this, {
+  	var satUrls = [0, 1, 2, 3, 4].map(function(sub) {
+        return 'http://shangetu' + sub +
+            '.map.bdimg.com/it/u=x={x};y={y};z={z};v=009;type=sate&fm=46&udt=20150601';
+    });
+    var urls = [0, 1, 2, 3, 4].map(function(sub) {
+        return 'http://online' + sub +
+            '.map.bdimg.com/onlinelabel/qt=tile&x={x}&y={y}&z={z}&v=009&styles=pl&udt=20170301&scaler=1&p=1';
+    });
+    ol.source.TileImage.call(this, {
   		crossOrigin: 'anonymous',   //跨域
 	    cacheSize: options.cacheSize,
         // projection: ol.proj.get('EPSG:3857'),
@@ -58,15 +83,18 @@ ol.source.BaiduMap = function(options){
             var z = tileCoord[0];
             var x = tileCoord[1];
             var y = tileCoord[2];
-
-            if(x<0)  x = "M"+(-x);
-            if(y<0)  y = "M"+(-y);
+            var hash = (x << z) + y;
+            var index = hash % urls.length;
+            index = index < 0 ? index + urls.length : index;
+            // if(x<0)  x = "M"+(-x);
+            // if(y<0)  y = "M"+(-y);
             if(options.mapType == "sat"){
-  				return "http://shangetu2.map.bdimg.com/it/u=x="+x+";y="+y+";z="+z+";v=009;type=sate&fm=46&udt=20150504&app=webearth2&v=009&udt=20150601";
+  				// return "http://shangetu2.map.bdimg.com/it/u=x="+x+";y="+y+";z="+z+";v=009;type=sate&fm=46&app=webearth2&udt=20150601";
+                return satUrls[index].replace('{x}', x).replace('{y}', y).replace('{z}', z);
   			}
 
-            return "http://online3.map.bdimg.com/onlinelabel/?qt=tile&x="+x+"&y="+y+"&z="+z+"&styles=pl&udt=20170301&scaler=1&p=1";
-            
+            // return "http://online3.map.bdimg.com/onlinelabel/?qt=tile&x="+x+"&y="+y+"&z="+z+"&styles=pl&udt=20170301&scaler=1&p=1";
+            return urls[index].replace('{x}', x).replace('{y}', y).replace('{z}', z);
 
         },
     	wrapX: options.wrapX !== undefined ? options.wrapX : true
