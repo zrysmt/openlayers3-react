@@ -16,8 +16,17 @@
    ```
    bd09.toWGS84(baiduMercator.inverse(point))
    ```
- * > https://github.com/tschaub/projzh
- * 
+   > https://github.com/tschaub/projzh
+ */
+/**
+ * Usage：使用
+   ```
+    var baiduMapSat = new ol.layer.Tile({
+        title: "百度地图卫星",
+        source: new ol.source.BaiduMap({mapType:"sat"})
+    });
+    map.addLayer(baiduMapSat);
+   ```
  */
 import ol from 'openlayers';
 import projzh from 'projzh';
