@@ -94,6 +94,14 @@ class Olbasemap extends React.Component{
         Eventful.subscribe('add-img',()=>maptypebarAction.layerCtl('add-img',map));
         Eventful.subscribe('remove-img-label',()=>maptypebarAction.layerCtl('remove-img-label',map));
         Eventful.subscribe('add-img-label',()=>maptypebarAction.layerCtl('add-img-label',map));
+        Eventful.subscribe('add-baidumap',()=>maptypebarAction.layerCtl('add-baidumap',map));
+        Eventful.subscribe('remove-baidumap',()=>maptypebarAction.layerCtl('remove-baidumap',map));
+        Eventful.subscribe('add-baidumap-sat',()=>maptypebarAction.layerCtl('add-baidumap-sat',map));
+        Eventful.subscribe('remove-baidumap-sat',()=>maptypebarAction.layerCtl('remove-baidumap-sat',map));
+        Eventful.subscribe('add-amap',()=>maptypebarAction.layerCtl('add-amap',map));
+        Eventful.subscribe('remove-amap',()=>maptypebarAction.layerCtl('remove-amap',map));
+        Eventful.subscribe('add-amap-sat',()=>maptypebarAction.layerCtl('add-amap-sat',map));
+        Eventful.subscribe('remove-amap-sat',()=>maptypebarAction.layerCtl('remove-amap-sat',map));
     }
     /****************************************************************/
     handleEditbar(){

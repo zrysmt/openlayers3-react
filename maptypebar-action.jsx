@@ -5,8 +5,11 @@
 import ol from 'openlayers';
 
 import olConfig from './ol-config';
+import olSourceBaiduMap from './ext/baidumap.js';//加载进来就行
 
-let img,imgLabel,vecLayer,vecLabelLayer;
+console.log(new ol.source.BaiduMap());
+
+let img,imgLabel,vecLayer,vecLabelLayer,baiduMap,baiduMapSat;
 
 class MaptypebarAction{
 	layerCtl(ctlType,map,layer){
@@ -75,6 +78,34 @@ class MaptypebarAction{
                 });
                 imgLabel.setZIndex(999);
                 map.addLayer(imgLabel);
+            break;
+            case "add-baidumap":
+                if(baiduMap) return;
+                baiduMap = new ol.layer.Tile({
+                    title: "百度地图",
+                    source: new ol.source.BaiduMap()
+                });
+                map.addLayer(baiduMap);
+            break;
+            case "remove-baidumap":
+                if(baiduMap){
+                    map.removeLayer(baiduMap);
+                    baiduMap = null;
+                } 
+            break;
+            case "add-baidumap-sat":
+                if(baiduMapSat) return;
+                baiduMapSat = new ol.layer.Tile({
+                    title: "百度地图卫星",
+                    source: new ol.source.BaiduMap({mapType:"sat"})
+                });
+                map.addLayer(baiduMapSat);
+            break;
+            case "remove-baidumap-sat":
+                if(baiduMapSat){
+                    map.removeLayer(baiduMapSat);
+                    baiduMapSat = null;
+                } 
             break;
         }
     }

@@ -40,7 +40,6 @@ class Maptypebar extends React.Component{
 			}else{
 				target.classList.remove('unselected');
 				target.classList.add('selected');
-				Eventful.dispatch('add-'+target.getAttribute('data-type'));
 				let type = 'add-'+target.getAttribute('data-type');
 				this.dispatch(type.trim());
 			}
@@ -57,10 +56,16 @@ class Maptypebar extends React.Component{
 			<div id ="maptypebar" className="mapbar" onClick={this.handleMaptype}>
 				<span className="maptypebar-title">切换地图</span>
 				<div className="maptypebar-pane" style={{display:"none"}}>
-					<div className="mapbar-ctl vec group1 selected" data-type="vec">矢量地图</div>
-					<div className="mapbar-ctl vec-label group1 selected" data-type="vec-label">矢量地图标注</div>
-					<div className="mapbar-ctl img group2 unselected" data-type="img">影像地图</div>
-					<div className="mapbar-ctl img-label group2 unselected" data-type="img-label">影像地图标注</div>
+					<div className="mapbar-ctl vec  selected" data-type="vec">矢量地图</div>
+					<div className="mapbar-ctl vec-label  selected" data-type="vec-label">矢量地图标注</div>
+					<div className="mapbar-ctl img  unselected" data-type="img">影像地图</div>
+					<div className="mapbar-ctl img-label  unselected" data-type="img-label">影像地图标注</div>
+					<div className="mapbar-ctl baidumap  unselected" data-type="baidumap">百度地图</div>
+					<div className="mapbar-ctl baidumap-sat  unselected" data-type="baidumap-sat">百度地图卫星图</div>
+					<div className="mapbar-ctl amap  unselected" data-type="amap">高德地图</div>
+					<div className="mapbar-ctl amap-sat  unselected" data-type="amap-sat">高德地图卫星图</div>
+					<div className="mapbar-ctl osm  unselected" data-type="osm">OpenStreetMap地图</div>
+					<div className="mapbar-ctl bingmap unselected" data-type="bingmap">Bing地图</div>
 				</div>
 			</div>
 		)
