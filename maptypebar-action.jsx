@@ -5,14 +5,22 @@
 import ol from 'openlayers';
 
 import olConfig from './ol-config';
-import olSourceBaiduMap from './ext/baidumap.js';//加载进来就行
-import TianMapSourcr from './ext/tianmap.js'; 
+import BaiduMapSource from './ext/baidumap.js';//加载进来就行
+import TianMapSource from './ext/tianmap.js'; 
+import AMapSource from './ext/amap.js'; 
 
-let img,imgLabel,vecLayer,vecLabelLayer,baiduMap,baiduMapSat;
+let img,imgLabel,vecLayer,vecLabelLayer,baiduMap,baiduMapSat,
+    aMap,aMapSat,osm,bingMap;
 
 class MaptypebarAction{
+    /**
+     * [layerCtl 图层控制]
+     * @param  {[String]} ctlType [控制类型]
+     * @param  {[ol.Map]} map     [ol.Map]
+     * @param  {[ol.Layer]} layer   [图层]
+     */
 	layerCtl(ctlType,map,layer){
-            console.warn(ctlType);
+            
         switch(ctlType){
             case 'remove-vec':
                 map.removeLayer(layer);
@@ -108,6 +116,65 @@ class MaptypebarAction{
                 if(baiduMapSat){
                     map.removeLayer(baiduMapSat);
                     baiduMapSat = null;
+                } 
+            break;
+            case "add-amap":
+                if(aMap) return;
+                aMap = new ol.layer.Tile({
+                    title: "高德地图",
+                    source: new ol.source.AMap({"map":map})
+                });
+                map.addLayer(aMap);
+            break;
+            case "remove-amap":
+                if(aMap){
+                    map.removeLayer(aMap);
+                    aMap = null;
+                } 
+            break;
+            case "add-amap-sat":
+                if(aMapSat) return;
+                aMapSat = new ol.layer.Tile({
+                    title: "高德地图",
+                    source: new ol.source.AMap({mapType:"sat"})
+                });
+                map.addLayer(aMapSat);
+            break;
+            case "remove-amap-sat":
+                if(aMapSat){
+                    map.removeLayer(aMapSat);
+                    aMapSat = null;
+                } 
+            break;
+            case "add-osm":
+                if(osm) return;
+                osm = new ol.layer.Tile({
+                    title: "OSM",
+                    source: new ol.source.OSM()
+                });
+                map.addLayer(osm);
+            break;
+            case "remove-osm":
+                if(osm){
+                    map.removeLayer(osm);
+                    osm = null;
+                } 
+            break;
+            case "add-bingmap":
+                if(bingMap) return;
+                bingMap = new ol.layer.Tile({
+                    title: "Bing地图",
+                    source: new ol.source.BingMaps({
+                        key: 'AgiU9gCjKNfaR2yFSDfLw8e9zUlAYisRvRC2_L-LsGYN2bII5ZUvorfP3QJvxmjn', //自己申请的key
+                        imagerySet: 'Road'// Aerial, AerialWithLabels, or Road.
+                    })
+                });
+                map.addLayer(bingMap);
+            break;
+            case "remove-bingmap":
+                if(bingMap){
+                    map.removeLayer(bingMap);
+                    bingMap = null;
                 } 
             break;
         }
